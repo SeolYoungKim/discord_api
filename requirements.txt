@@ -1,0 +1,7 @@
+beautifulsoup4 @ file:///tmp/build/80754af9/beautifulsoup4_1631874778482/work
+discord==1.7.3
+discord.py==1.7.3
+lxml @ file:///C:/ci/lxml_1616443418777/work
+numpy @ file:///C:/ci/numpy_and_numpy_base_1626271900803/work
+requests @ file:///tmp/build/80754af9/requests_1629994808627/work
+psycopg2==2.6.2
