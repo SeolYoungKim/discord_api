@@ -5,9 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 import numpy as np
 import asyncio
+import os
 
-
-discord_token = 'OTQ4NTI4MTE0ODk4NzE4NzYy.Yh9HpQ.wT_-XiUc0IvWZu-hn-BnypRnbJs'
 
 # discord Client class를 생성합니다.
 client = commands.Bot(command_prefix='!')
@@ -101,5 +100,5 @@ async def introduce_commands(ctx):
 
 
 # 위에서 설정한 client class를 token으로 인증하여 실행합니다.
-client.run(discord_token)
+client.run(os.environ['token'])
 
