@@ -262,12 +262,11 @@ async def crwal(ctx):
 @client.command(name='사용법')
 async def introduce_commands(ctx):
     embed = discord.Embed(title="기능 안내", description="기능 및 명령어 안내", color=0x005666)
-    embed.add_field(name="근아봇에게 인사하기", value="`!야 or !안녕`", inline=True)
+    embed.add_field(name="인사하기", value="`!야 or !안녕`", inline=True)
     embed.add_field(name="강화 운 보기", value="`!강화`", inline=True)
     embed.add_field(name="사사게 염탐", value="`!사사게`", inline=True)
     embed.add_field(name="주사위 굴리기", value="`!주사위 (숫자)`", inline=True)
     embed.add_field(name="오늘의 날씨", value="`!날씨`", inline=True)
-    embed.add_field(name="모코코봇 핥기", value="`!핥짝`", inline=True)
     embed.add_field(name="가위바위보", value="`!가위/!바위/!보`", inline=True)
     embed.add_field(name="롤 전적 검색", value="`!롤 (닉네임)`", inline=True)
     embed.add_field(name="오늘의 운세", value="`!운세 성별 생년월일(8자리)`", inline=True)
