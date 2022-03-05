@@ -155,16 +155,16 @@ async def on_message(message):
             browser.find_element(by=By.XPATH,
                                  value='//*[@id="fortune_birthCondition"]/div[1]/fieldset/div[1]/span[2]/a').click()
 
-        time.sleep(1)
+        time.sleep(0.5)
         browser.find_element(by=By.XPATH,
                              value='//*[@id="srch_txt"]').click()
-        time.sleep(1)
+        time.sleep(0.5)
         browser.find_element(by=By.CLASS_NAME, value='srch_txt').send_keys(birth)
 
-        time.sleep(1)
+        time.sleep(0.5)
         browser.find_element(by=By.XPATH,
                              value='//*[@id="fortune_birthCondition"]/div[1]/fieldset/input').click()
-        time.sleep(1)
+        time.sleep(0.5)
         browser.find_element(by=By.XPATH,
                              value='//*[@id="fortune_birthResult"]/ul[2]/li[3]/a').click()
 
