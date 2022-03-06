@@ -65,119 +65,117 @@ def create_browser():
     return browser
 
 
-@client.event
-async def on_message(message):
-    # message란 discord 채널에 올라오는 모든 message를 의미합니다.
-    # 따라서 bot이 보낸 message도 포함이되죠.
-    # 아래 조건은 message의 author가 bot(=clinet.user)이라면 그냥 return으로 무시하라는 뜻입니다.
-    if message.author == client.user:
-        return
+@client.command(name='롤')
+async def lol_info(ctx):
+    msg = ctx.message.content.replace('!롤', '')
+    user_id = msg.replace(' ', '')
+    url = "https://www.op.gg/" + f"summoners/kr/{user_id}"
+    soup = create_soup(url)
 
-    if message.content.startswith("!롤"):
-        msg = message.content.replace("!롤", "")
-        user_id = msg.replace(" ", "")
-        url = "https://www.op.gg/" + f"summoners/kr/{user_id}"
-        soup = create_soup(url)
+    # 유저 랭크 : 언랭일 때, 언랭인데 자랭이 있을 때 어떻게 할 지 작업
+    rank_info = soup.find("div", attrs={"class": "tier-rank"}).get_text().upper()
+    win_lose_info = soup.find("span", attrs={"class": "win-lose"}).get_text()[:-12]
+    win_lose_prob = soup.find("span", attrs={"class": "win-lose"}).get_text()[-12:]
+    most_chp_name = soup.find("div", attrs={"class": "name"}).find("a").get_text()
+    most_chp_kda = soup.find("div", attrs={"class": re.compile("exxtup1$")}).get_text()[:-4]
+    most_chp_prob = soup.find("div", attrs={"class": re.compile("exxtup0$")}).get_text()
 
-        # 유저 랭크 : 언랭일 때, 언랭인데 자랭이 있을 때 어떻게 할 지 작업
-        rank_info = soup.find("div", attrs={"class": "tier-rank"}).get_text().upper()
-        win_lose_info = soup.find("span", attrs={"class": "win-lose"}).get_text()[:-12]
-        win_lose_prob = soup.find("span", attrs={"class": "win-lose"}).get_text()[-12:]
-        most_chp_name = soup.find("div", attrs={"class": "name"}).find("a").get_text()
-        most_chp_kda = soup.find("div", attrs={"class": re.compile("exxtup1$")}).get_text()[:-4]
-        most_chp_prob = soup.find("div", attrs={"class": re.compile("exxtup0$")}).get_text()
+    img = soup.find("div", attrs={"class": "medal"}).find("img")["src"]
 
-        img = soup.find("div", attrs={"class": "medal"}).find("img")["src"]
+    embed = discord.Embed(title=f"{user_id}님의 플레이어 정보", color=0x005666)
+    embed.add_field(name="티어 정보", value=f"`{rank_info} | {win_lose_info} ({win_lose_prob})`", inline=False)
+    embed.add_field(name="모스트 챔피언", value=f"`{most_chp_name} | {most_chp_kda} | {most_chp_prob}`", inline=False)
+    embed.set_thumbnail(url=img)
 
-        embed = discord.Embed(title=f"{user_id}님의 플레이어 정보", color=0x005666)
-        embed.add_field(name="티어 정보", value=f"`{rank_info} | {win_lose_info} ({win_lose_prob})`", inline=False)
-        embed.add_field(name="모스트 챔피언", value=f"`{most_chp_name} | {most_chp_kda} | {most_chp_prob}`", inline=False)
-        embed.set_thumbnail(url=img)
+    await ctx.send(embed=embed)
 
-        await message.channel.send(embed=embed)
 
-    if message.content == "!가위" or message.content == "!바위" or message.content == "!보":
+@client.command(aliases=['가위', '바위', '보'])
+async def rock_sissor_paper(ctx):
+    msg = ctx.message.content
+
+    if msg == '!가위' or msg == '!바위' or msg == '!보':
         random_ = randint(1, 3)
 
         if random_ == 1:  # random 에 저장된 변수가 1일때 (가위 일때)
-            if message.content == "!가위":
-                await message.channel.send("가위!")
-                await message.channel.send("비겼습니다.")
+            if msg == "!가위":
+                await ctx.send("가위!")
+                await ctx.send("비겼습니다.")
 
-            elif message.content == "!바위":
-                await message.channel.send("가위!")
-                await message.channel.send("이겼죠? 쉽죠?")
+            elif msg == "!바위":
+                await ctx.send("가위!")
+                await ctx.send("그래 내가 졌다.")
 
             else:
-                await message.channel.send("가위!")
-                await message.channel.send("이것도 못이기죠?")
+                await ctx.send("가위!")
+                await ctx.send("이것도 못이기죠? 너~무쉽죠?")
 
         if random_ == 2:  # random 에 저장된 변수가 2일때 (바위 일때)
-            if message.content == "!가위":
-                await message.channel.send("바위!")
-                await message.channel.send("응애~ 베리 EZ 하죠?")
+            if msg == "!가위":
+                await ctx.send("바위!")
+                await ctx.send("응애~ 베리 EZ 하죠?")
 
-            elif message.content == "!바위":
-                await message.channel.send("바위!")
-                await message.channel.send("비겼습니다.")
+            elif msg == "!바위":
+                await ctx.send("바위!")
+                await ctx.send("비겼습니다.")
 
             else:
-                await message.channel.send("바위!")
-                await message.channel.send("제가 졌습니다.")
+                await ctx.send("바위!")
+                await ctx.send("제가 졌습니다.")
 
         if random_ == 3:  # random 에 저장된 변수가 3일때 (보 일때)
-            if message.content == "!가위":
-                await message.channel.send("보!")
-                await message.channel.send("제가 졌습니다.")
+            if msg == "!가위":
+                await ctx.send("보!")
+                await ctx.send("제가 졌습니다.")
 
-            elif message.content == "!바위":
-                await message.channel.send("보!")
-                await message.channel.send("쉽다 쉬워")
+            elif msg == "!바위":
+                await ctx.send("보!")
+                await ctx.send("쉽다 쉬워~ 나가~~~!")
 
             else:
-                await message.channel.send("보!")
-                await message.channel.send("비겼습니다.")
+                await ctx.send("보!")
+                await ctx.send("비겼습니다.")
 
-    if message.content.startswith("!운세"):
-        msg = message.content.split(" ")
-        gender = msg[1]
-        birth = msg[2]
 
-        url = "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1" \
-              "&ie=utf8&query=%EC%98%A4%EB%8A%98%EC%9D%98+%EC%9A%B4%EC%84%B8"
+@client.command(name='운세')
+async def lucky(ctx):
+    msg = ctx.message.content.split()
+    gender = msg[1]
+    birth = msg[2]
 
-        browser = create_browser()
-        browser.maximize_window()
-        browser.get(url)
+    url = "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1" \
+          "&ie=utf8&query=%EC%98%A4%EB%8A%98%EC%9D%98+%EC%9A%B4%EC%84%B8"
 
-        time.sleep(1)
-        if gender == "여자":
-            browser.find_element(by=By.XPATH,
-                                 value='//*[@id="fortune_birthCondition"]/div[1]/fieldset/div[1]/span[2]/a').click()
+    browser = create_browser()
+    browser.maximize_window()
+    browser.get(url)
 
-        time.sleep(1)
+    time.sleep(1)
+    if gender == "여자":
         browser.find_element(by=By.XPATH,
-                             value='//*[@id="srch_txt"]').click()
-        time.sleep(1)
-        browser.find_element(by=By.CLASS_NAME, value='srch_txt').send_keys(birth)
+                             value='//*[@id="fortune_birthCondition"]/div[1]/fieldset/div[1]/span[2]/a').click()
 
-        time.sleep(1)
-        browser.find_element(by=By.XPATH,
-                             value='//*[@id="fortune_birthCondition"]/div[1]/fieldset/input').click()
-        time.sleep(1)
-        browser.find_element(by=By.XPATH,
-                             value='//*[@id="fortune_birthResult"]/ul[2]/li[3]/a').click()
+    time.sleep(1)
+    browser.find_element(by=By.XPATH,
+                         value='//*[@id="srch_txt"]').click()
+    time.sleep(1)
+    browser.find_element(by=By.CLASS_NAME, value='srch_txt').send_keys(birth)
 
-        soup = BeautifulSoup(browser.page_source, "lxml")
+    time.sleep(1)
+    browser.find_element(by=By.XPATH,
+                         value='//*[@id="fortune_birthCondition"]/div[1]/fieldset/input').click()
+    time.sleep(1)
+    browser.find_element(by=By.XPATH,
+                         value='//*[@id="fortune_birthResult"]/ul[2]/li[3]/a').click()
 
-        luck = soup.find("dl", attrs={"class": "infor _luckText v2"}).get_text()
+    soup = BeautifulSoup(browser.page_source, "lxml")
 
-        embed = discord.Embed(title="오늘의 금전운", color=0x005666)
-        embed.add_field(name="금전운", value=f"`{luck}`", inline=False)
+    luck = soup.find("dl", attrs={"class": "infor _luckText v2"}).get_text()
 
-        await message.channel.send(embed=embed)
+    embed = discord.Embed(title="오늘의 금전운", color=0x005666)
+    embed.add_field(name="금전운", value=f"`{luck}`", inline=False)
 
-    await client.process_commands(message)  # 혼용 시 필수!
+    await ctx.send(embed=embed)
 
 
 @client.command(aliases=['날씨'])
