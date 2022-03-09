@@ -274,28 +274,35 @@ geuna_info = {
 async def geuna_(ctx):
     msg = ctx.message.content.split()
     target_msg = msg[1]
+    author_name = ctx.message.author.name
+    author_id = ctx.message.author.id
+
+    # print(author, type(author))
+    # print(author_id, type(author_id))
 
     global geuna_info
     global bad_word
 
-    if target_msg:
-        if target_msg not in bad_word:
-            if len(target_msg) < 10:
-                if geuna_info['김근아'] is None:
-                    geuna_info['김근아'] = target_msg
-                else:
-                    if target_msg not in geuna_info['김근아']:
-                        target_msg = ", " + msg[1]
-                        geuna_info['김근아'] += target_msg
+    if target_msg == '초기화' and author_id == 426341928725118977:
+        geuna_info['김근아'] = None
+    else:
+        if target_msg:
+            if target_msg not in bad_word:
+                if len(target_msg) < 10 and target_msg != '초기화':
+                    if geuna_info['김근아'] is None:
+                        geuna_info['김근아'] = target_msg
+                    else:
+                        if target_msg not in geuna_info['김근아']:
+                            target_msg = ", " + msg[1]
+                            geuna_info['김근아'] += target_msg
 
-            geuna_keyword = str(geuna_info['김근아'])
-            notice = f'김근아 님은 {geuna_keyword}입니다.'
+                geuna_keyword = str(geuna_info['김근아'])
+                notice = f'김근아 님은 {geuna_keyword}입니다.'
 
-            await ctx.send(notice)
+                await ctx.send(notice)
 
-        else:
-            author_name = ctx.message.author.name
-            await ctx.send(f'{author_name} = {target_msg} \n욕설은 추가되지 않습니다.')
+            else:
+                await ctx.send(f'{author_name} = {target_msg} \n욕설은 추가되지 않습니다.')
 
 
 @client.command(name='사용법')
