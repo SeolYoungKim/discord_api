@@ -16,6 +16,14 @@ from selenium.webdriver.common.by import By
 # discord Client class를 생성합니다.
 client = commands.Bot(command_prefix='!')
 
+bad_word = []
+with open('fword_list.txt', 'r', encoding='utf8') as f:
+    f_word = f.readlines()
+    for fw in f_word:
+        bad_word.append(fw.strip())
+
+print(bad_word)
+
 
 @client.event   # event decorator를 설정하고 on_ready function을 할당해줍니다.
 async def on_ready():  # on_ready event는 discord bot이 discord에 정상적으로 접속했을 때 실행됩니다.
@@ -257,6 +265,39 @@ async def crwal(ctx):
     await ctx.send(embed=embed)
 
 
+geuna_info = {
+    '김근아': None
+}
+
+
+@client.command(name='김근아')
+async def geuna_(ctx):
+    msg = ctx.message.content.split()
+    target_msg = msg[1]
+
+    global geuna_info
+    global bad_word
+
+    if target_msg:
+        if target_msg not in bad_word:
+            if len(target_msg) < 10:
+                if geuna_info['김근아'] is None:
+                    geuna_info['김근아'] = target_msg
+                else:
+                    if target_msg not in geuna_info['김근아']:
+                        target_msg = ", " + msg[1]
+                        geuna_info['김근아'] += target_msg
+
+            geuna_keyword = str(geuna_info['김근아'])
+            notice = f'김근아 님은 {geuna_keyword}입니다.'
+
+            await ctx.send(notice)
+
+        else:
+            author_name = ctx.message.author.name
+            await ctx.send(f'{author_name} = {target_msg} \n욕설은 추가되지 않습니다.')
+
+
 @client.command(name='사용법')
 async def introduce_commands(ctx):
     embed = discord.Embed(title="기능 안내", description="기능 및 명령어 안내", color=0x005666)
@@ -268,26 +309,13 @@ async def introduce_commands(ctx):
     embed.add_field(name="가위바위보", value="`!가위/!바위/!보`", inline=True)
     embed.add_field(name="롤 전적 검색", value="`!롤 (닉네임)`", inline=True)
     embed.add_field(name="오늘의 운세", value="`!운세 성별 생년월일(8자리)`", inline=True)
+    embed.add_field(name="김근아 정보", value="`!김근아 10글자 미만 단어`", inline=True)
     # embed.set_thumbnail(url="https://image.fmkorea.com/files/attach/new2/20211226/44021718/2973985274/4196305521/6846842362dde48a0087207e49a2dcff.jpg")
     embed.set_image(url="https://image.fmkorea.com/files/attach/new2/20211226/44021718/2973985274/"
                         "4196305521/6846842362dde48a0087207e49a2dcff.jpg")
     embed.set_footer(text="롤 전적 검색의 경우, 언랭이면 검색이 안되거나 자랭이 출력됩니다.")
 
     await ctx.send(embed=embed)
-
-
-total = 0
-
-
-@client.command(name='프린트')
-async def practice(ctx):
-    msg = ctx.message.content.split()
-    number = int(msg[1])
-
-    global total
-    total += number
-
-    await ctx.send(total)
 
 
 # 위에서 설정한 client class를 token으로 인증하여 실행합니다.
