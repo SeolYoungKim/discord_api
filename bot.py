@@ -274,7 +274,21 @@ async def introduce_commands(ctx):
     embed.set_footer(text="롤 전적 검색의 경우, 언랭이면 검색이 안되거나 자랭이 출력됩니다.")
 
     await ctx.send(embed=embed)
-    
+
+
+total = 0
+
+
+@client.command(name='프린트')
+async def practice(ctx):
+    msg = ctx.message.content.split()
+    number = int(msg[1])
+
+    global total
+    total += number
+
+    await ctx.send(total)
+
 
 # 위에서 설정한 client class를 token으로 인증하여 실행합니다.
 client.run(os.environ['token'])
